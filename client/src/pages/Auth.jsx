@@ -23,7 +23,9 @@ const Auth = () => {
                 navigate('/dashboard');
             }
         } catch (err) {
-            setError(err.response?.data?.message || 'Something went wrong');
+            const detailedError = err.response?.data?.message || err.message || 'Unknown Error';
+            const status = err.response?.status ? ` (Status: ${err.response.status})` : '';
+            setError(`${detailedError}${status}`);
         }
     };
 
