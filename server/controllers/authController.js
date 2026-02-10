@@ -2,8 +2,18 @@ const Student = require('../models/Student');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+const getJwtSecret = () => {
+    if (process.env.JWT_SECRET) {
+        return process.env.JWT_SECRET;
+    }
+    if (process.env.NODE_ENV === 'production') {
+        throw new Error('JWT_SECRET is not configured');
+    }
+    return 'dev-secret';
+};
+
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
+    return jwt.sign({ id }, getJwtSecret(), {
         expiresIn: '30d',
     });
 };
@@ -11,6 +21,9 @@ const generateToken = (id) => {
 exports.registerStudent = async (req, res) => {
     try {
         const { name, rollNumber, password } = req.body;
+        if (!name || !rollNumber || !password) {
+            return res.status(400).json({ message: 'Name, roll number, and password are required' });
+        }
 
         const studentExists = await Student.findOne({ rollNumber });
         if (studentExists) {
@@ -44,6 +57,9 @@ exports.registerStudent = async (req, res) => {
 exports.loginStudent = async (req, res) => {
     try {
         const { rollNumber, password } = req.body;
+        if (!rollNumber || !password) {
+            return res.status(400).json({ message: 'Roll number and password are required' });
+        }
         const student = await Student.findOne({ rollNumber });
 
         if (student && (await bcrypt.compare(password, student.password))) {
