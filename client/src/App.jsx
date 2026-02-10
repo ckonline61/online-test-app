@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import Home from './pages/Home';
 import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import TestInterface from './pages/TestInterface';
@@ -9,7 +10,7 @@ function App() {
     return (
         <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
             <Routes>
-                <Route path="/" element={<Navigate to="/auth" />} />
+                <Route path="/" element={<Home />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/test/:testId" element={<TestInterface />} />
